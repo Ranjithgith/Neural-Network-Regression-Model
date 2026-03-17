@@ -6,29 +6,12 @@ To develop a neural network regression model for the given dataset.
 
 ## THEORY
 
-The class NeuralNet inherits from nn.Module, which is the base class for all neural networks in PyTorch.
-
-In the constructor init, layers and activation functions are defined.
-
-The first layer self.n1=nn.Linear(1,10) takes one input feature and maps it to 10 neurons.
-
-The second layer self.n2=nn.Linear(10,20) processes the 12 outputs and maps them to 20 neurons.
-
-The third layer self.n3=nn.Linear(20,1) reduces the 14 features back to a single output.
-
-The activation function self.relu=nn.ReLU() introduces non-linearity, helping the network learn complex patterns.
-
-A history dictionary is initialized to store the loss values during training for performance tracking.
-
-The forward function defines how input data flows through the network layers.
-
-Input x is first passed through n1 and activated by ReLU, then through n2 with ReLU again.
-
-Finally, the processed data passes through n3 to produce the output, which is returned.
+The objective of this project is to develop a Neural Network Regression Model that can accurately predict a target variable based on input features. The model will leverage deep learning techniques to learn intricate patterns from the dataset and provide reliable predictions.
 
 ## Neural Network Model
 
-<img width="705" height="741" alt="Screenshot 2026-02-10 151611" src="https://github.com/user-attachments/assets/e2133b64-a19a-43cd-a503-2964c0084602" />
+<img width="842" height="665" alt="image" src="https://github.com/user-attachments/assets/df99db89-d0f4-42d2-9108-770c212ba05a" />
+
 
 
 ## DESIGN STEPS
@@ -63,62 +46,66 @@ Evaluate the model with the testing data.
 
 ## PROGRAM
 ### Name: RANJIT R
-### Register Number:212224240131
-```
-class Neuralnet(nn.Module):
-   def __init__(self):
+### Register Number: 212224240131
+```python
+class NeuralNet(nn.Module):
+    def __init__(self):
         super().__init__()
-        self.n1=nn.Linear(1,10)
-        self.n2=nn.Linear(10,20)
-        self.n3=nn.Linear(20,1)
-        self.relu=nn.ReLU()
-        self.history={'loss': []}
-   def forward(self,x):
-        x=self.relu(self.n1(x))
-        x=self.relu(self.n2(x))
-        x=self.n3(x)
+        self.hidden1 = nn.Linear(1, 16)
+        self.hidden2 = nn.Linear(16, 8)
+        self.output = nn.Linear(8, 1)
+        self.relu = nn.ReLU()
+        self.history = {'loss': []}
+    def forward(self, x):
+        x = self.relu(self.hidden1(x))
+        x = self.relu(self.hidden2(x))
+        x = self.output(x)
         return x
 
+R_brain = NeuralNet()
+criterion = nn.MSELoss()
+optimizer = optim.Adam(R_brain.parameters(), lr=0.01)
 
-## Initialize the Model, Loss Function, and Optimizer
-deva_brain=Neuralnet()
-criteria=nn.MSELoss()
-optimizer=optim.RMSprop(deva_brain.parameters(),lr=0.001)
 
-def train_model(deva_brain,x_train,y_train,criteria,optmizer,epochs=4000):
-    for i in range(epochs):
+def train_model(R_brain, X_train, y_train, criterion, optimizer, epochs=2000):
+    for epoch in range(1, epochs + 1):
         optimizer.zero_grad()
-        loss=criteria(deva_brain(x_train),y_train)
+        outputs = R_brain(X_train)
+        loss = criterion(outputs, y_train)
         loss.backward()
         optimizer.step()
-        
-        deva_brain.history['loss'].append(loss.item())
-        if i%200==0:
-            print(f"Epoch [{i}/epochs], loss: {loss.item():.6f}")
+
+        R_brain.history['loss'].append(loss.item())
+        if epoch % 200 == 0:
+            print(f'Epoch [{epoch}/{epochs}], Loss: {loss.item():.6f}')
 
 ```
-
 ## Dataset Information
 
-<img width="308" height="555" alt="image" src="https://github.com/user-attachments/assets/9493f983-ae5f-467a-9efc-6f6dc992be37" />
+<img width="191" height="529" alt="image" src="https://github.com/user-attachments/assets/a6b12664-78eb-497a-a179-a3bfc7968c46" />
+
 
 
 ## OUTPUT
 
-<img width="424" height="442" alt="Screenshot 2026-02-10 151215" src="https://github.com/user-attachments/assets/156e2d7e-f1b4-4d97-aa8c-dbd25b580e41" />
-
-
 ### Training Loss Vs Iteration Plot
 
-<img width="754" height="579" alt="Screenshot 2026-02-10 151231" src="https://github.com/user-attachments/assets/df284cfe-d9d5-4c59-b910-666a95f919b6" />
+<img width="1243" height="698" alt="image" src="https://github.com/user-attachments/assets/d0026594-a7c0-4199-8f56-237ab72c6292" />
+
+
 
 
 ### New Sample Data Prediction
 
+```
+X_n1_1 = torch.tensor([[7]], dtype=torch.float32)
+prediction = R_brain(torch.tensor(scaler.transform(X_n1_1), dtype=torch.float32)).item()
+print(f'Prediction: {prediction:.4f}')
+```
 
-<img width="865" height="139" alt="Screenshot 2026-02-10 151223" src="https://github.com/user-attachments/assets/f9fd6f8d-5e99-4de4-9d59-adac17858df4" />
+<img width="603" height="54" alt="image" src="https://github.com/user-attachments/assets/a74c6777-e8bd-48b5-a617-4be044595201" />
 
 
 ## RESULT
 
-Successfully executed the code to develop a neural network regression model.
+The neural network regression model was successfully trained and evaluated. The model demonstrated strong predictive performance on unseen data, with a low error rate.
